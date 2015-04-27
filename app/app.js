@@ -13,13 +13,26 @@ $(function(){
 				data: {q: artist,
 					  type: 'artist'},
 				success: function(data){
-					console.log(data.artists.items[0].id);
+					console.log('artist: ', data.artists.items[0].name, ' id: ', data.artists.items[0].id);
+					var artistId = data.artists.items[0].id; 
+					$.ajax({
+						url: app.spotifyAPI + '/v1/artists/'+ artistId + '/related-artists',
+						type: 'GET', 
+						contentType: 'application/json',
+						success: function(data){
+							data.artists.forEach(function(artistObj){
+								console.log(artistObj.name);
+							})
+							// console.log('related artists: ', data);
+						}
+					})
+					//another GET request to get the related artists
 				}
 			})
 		},
 
 		init: function(){
-			app.getArtist('beyonce');
+			app.getArtist('Ghost Loft');
 		}
 
 
