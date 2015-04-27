@@ -1,0 +1,13 @@
+{
+  "name": "spotty-fly",
+  "version": "0.0.0",
+  "dependencies": {
+    "jquery": "~2.0.3",
+    "d3": "~3.5.5"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
+}
