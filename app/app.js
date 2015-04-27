@@ -1,9 +1,6 @@
-var app; 
-$(function(){
-	app = {
-
+var app = {
 		spotifyAPI: 'https://api.spotify.com',
-		// GET https://api.spotify.com/v1/search
+		artistRelations : {},
 
 		getArtist: function(artist){
 			$.ajax({
@@ -13,29 +10,37 @@ $(function(){
 				data: {q: artist,
 					  type: 'artist'},
 				success: function(data){
-					console.log('artist: ', data.artists.items[0].name, ' id: ', data.artists.items[0].id);
+					var artistName = data.artists.items[0].name;
 					var artistId = data.artists.items[0].id; 
+					var artistPop = data.artists.items[0].popularity; 
+					app.artistRelations[artistName] = {};
+					app.artistRelations[artistName].id = artistId; 
+					app.artistRelations[artistName].popularity = artistPop; 
+					app.artistRelations[artistName].related = [];
 					$.ajax({
 						url: app.spotifyAPI + '/v1/artists/'+ artistId + '/related-artists',
 						type: 'GET', 
 						contentType: 'application/json',
 						success: function(data){
 							data.artists.forEach(function(artistObj){
-								console.log(artistObj.name);
+								var artistTrimmed = {
+									name : artistObj.name,
+									  id : artistObj.id,
+									  popularity: artistObj.popularity
+
+								};
+								app.artistRelations[artistName].related.push(artistTrimmed);
 							})
-							// console.log('related artists: ', data);
+							createMap(app.artistRelations);
 						}
 					})
-					//another GET request to get the related artists
 				}
 			})
 		},
 
 		init: function(){
-			app.getArtist('Ghost Loft');
+			app.getArtist('Beyonce');
 		}
+};
 
 
-	}
-
-})
