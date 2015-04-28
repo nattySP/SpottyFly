@@ -1,0 +1,40 @@
+body {
+	font-family: arial;
+}
+
+#list-container{
+	float: left;
+	width: 250px;
+	display: inline-block;
+}
+
+#svg-container{
+	float: left;
+	display: inline-block;
+}
+input[type=text]{
+	height: 23px;
+}
+
+.btn {
+		width: 120px;
+    background-color: #ccc;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius:0;
+    color: #fff;
+    font-family: 'Arial';
+    font-size: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+}
+
+.btn:hover {
+    border: none;
+    background:#8F8F8F;
+}
+
+.btn.clicked{
+    background:#8F8F8F;
+}

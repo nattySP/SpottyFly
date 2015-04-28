@@ -1,7 +1,8 @@
 var app = {
 		spotifyAPI: 'https://api.spotify.com',
+		mode : 'Spotty',
 
-		getArtist: function(artist){
+		getArtist: function(artist, callback){
 			app.artistRelations = {};
 			$.ajax({
 				url: app.spotifyAPI + '/v1/search',
@@ -27,11 +28,10 @@ var app = {
 									name : artistObj.name,
 									  id : artistObj.id,
 									  popularity: artistObj.popularity
-
 								};
 								app.artistRelations[artistName].related.push(artistTrimmed);
 							})
-							createMap(app.artistRelations);
+							callback(app.artistRelations, app.mode);
 						}
 					})
 				}
@@ -42,9 +42,15 @@ var app = {
 			$('#selectArtist').on('submit', function(event){
 				event.preventDefault();
 				var artist = $(this).find('#artist').val();
-				console.log('submit with ', artist);
-				app.getArtist(artist);
+				app.getArtist(artist, createMap);
 				$(this).find('#artist').val('');
+			});
+
+			$(':button').on('click', function(){
+				app.mode = $(this).attr('value');
+				$('.clicked').removeClass('clicked');
+				$(this).addClass('clicked');
+				console.log('app.mode: ', app.mode);
 			})
 		}
 };

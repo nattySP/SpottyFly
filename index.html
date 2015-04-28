@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>spotty fly</title>
-    <!-- <link rel="stylesheet" href="styles/styles.css"> -->
+    <link rel="stylesheet" href="styles.css">
 
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
@@ -16,9 +16,19 @@
   </head>
   <body>
     <form id='selectArtist'>
-      <input id='artist' type='text'></input>
-      <input type='submit'> </input>
+      <h2>SpottyFly</h2>
+      <input id='artist' type='text' placeholder='Enter an artist...'></input>
+      <input type='submit' class="btn"> </input>
+      <input type='button' class="btn clicked" id='Spotty' value='Spotty'></input>
+      <input type='button' class="btn" id='Fly' value='Fly'></input>
     </form>
+    <div id='list-container'>
+      <h3 id='artist1'></h3><h3 id='artist2'></h3>
+      <ul>
+      </ul>  
+    </div>  
+    <div id='svg-container'>
+    </div>
     <script>
       $(function(){
         app.init();

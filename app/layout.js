@@ -1,32 +1,35 @@
-var w = 960, h = 500;
+var w = 900, h = 600;
 
 var labelDistance = 0;
 
 //this appends the SVG element to the body
-var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+var vis = d3.select('body').select("#svg-container").append("svg:svg").attr("width", w).attr("height", h);
 var force = d3.layout.force();
 
 
-var createMap = function(data){
+
+var createMap = function(data, mode){
 	console.log('create map called');
+	console.log('mode: ', mode);
+  //clear out the list
+  console.log("div.list-items: ", d3.select('#list-container').selectAll('li'))
+  d3.select('#list-container').selectAll('li').remove();
+
 
 	var nodes = [];
-	console.log('nodes ', nodes);
 	var links = [];
-	console.log('links', links);
-	console.log('data ', data);
 	//this fills the nodes array and links array with the connections for the submitted artist
 	//this is what needs to be changed on update
 
 	for (var key in data){
+		d3.select('#list-container').select('#artist1').text('Artists similar to ' + key);
 		var node = {
 			label: key,
 			id: data[key].id,
 			popularity: data[key].popularity,
-			weight: 20
+			weight: data[key].related.length
 		}
 		nodes.push(node);
-
 		data[key].related.forEach(function(artist){
 			var node = {
 				label: artist.name,
@@ -37,8 +40,6 @@ var createMap = function(data){
 			nodes.push(node);
 		})
 	}
-
-
 	for(var i = 0; i < nodes.length; i++) {
 		links.push({
 			source : nodes[0],
@@ -56,9 +57,9 @@ var createMap = function(data){
 				.size([w, h])
 				.nodes(nodes)
 				.links(links)
-				.gravity(1)
-				.linkDistance(150) //distance between nodes
-				.charge(-8000)
+				.gravity(2)
+				.linkDistance(100) //distance between nodes
+				.charge(-11000)
 				.linkStrength(function(x) {
 						return x.weight * 10
 				});
@@ -87,13 +88,10 @@ var createMap = function(data){
 
 	var size = [];
 	force.nodes().forEach(function(d){
-    console.log('pop ', d.popularity);
     size.push(d.popularity);
   });
-  console.log('size ', size);
   var min = Math.min.apply(null, size);
   var max = Math.max.apply(null, size);
-  console.log('min ', min, 'max ', max);
   var range = max - min; 			
 
 	node.append("svg:circle")
@@ -109,38 +107,97 @@ var createMap = function(data){
 		      .text(function(d) { return d.label;})
 		      .style('font-family', 'arial');
 
-	console.log('text', text);
   node.exit().remove();
   text.exit().remove();
-	link.exit().remove();
-	
-	// node.call(force.drag); //makes nodes draggable
-
-	var updateLink = function() {
-		this.attr("x1", function(d) {
-			return d.source.x;
-		}).attr("y1", function(d) {
-			return d.source.y;
-		}).attr("x2", function(d) {
-			return d.target.x;
-		}).attr("y2", function(d) {
-			return d.target.y;
-		});
-
-	}
-
-	force.on("tick", function() {
-		var updateNode = d3.transition(node)
-				.attr("transform", function(d){ return "translate(" + d.x + "," + d.y + ")"; });
-		link.call(updateLink);
-	});
+  link.exit().remove();
 
 
-	node.on('click', function(clickedNode){
-		console.log(clickedNode.label);
-		var newArtist = clickedNode.label; 
-		app.getArtist(newArtist);
-	});
+  d3.select('#Spotty').on('click', function(){
+  	mode = 'Spotty';
+  });
+  d3.select('#Fly').on('click', function(){
+  	mode = 'Fly';
+  });
+  
+
+  var drag = force.drag()
+  .on("dragstart",
+    function(dragNode){
+      var newArtist = dragNode.label;
+      d3.select('#list-container').select('#artist2').text(' & ' + newArtist);
+      app.getArtist(newArtist, compareNodes);
+    })
+  .on('dragend', function(dragNode){
+  	if (mode === 'Spotty'){
+  		return
+  	}else{
+  		d3.select('#list-container').select('#artist2').text('');
+      var newArtist = dragNode.label; 
+      app.getArtist(newArtist, createMap);
+  	}
+  })
+
+
+  node.call(drag); //makes nodes draggable
+
+  var updateLink = function() {
+    this.attr("x1", function(d) {
+      return d.source.x;
+    }).attr("y1", function(d) {
+      return d.source.y;
+    }).attr("x2", function(d) {
+      return d.target.x;
+    }).attr("y2", function(d) {
+      return d.target.y;
+    });
+
+  }
+
+  force.on("tick", function() {
+    var updateNode = d3.transition(node)
+        .attr("transform", function(d){ return "translate(" + d.x + "," + d.y + ")"; });
+    link.call(updateLink);
+  });
+
 }
 
-// var updateLayout = function ()
+var compareNodes = function(data){
+	console.log('compareNodes called');
+  var currNodes = _.map(force.nodes(), function(obj){return obj.label}); 
+  var newData; 
+  for (var key in data){
+    newData = _.map(data[key].related, function(obj){return obj.name});
+  }
+  var intersection = _.intersection(currNodes, newData);
+  console.log('intersection: ', intersection);
+  var colorNodes = _.map(force.nodes(), function(obj){
+    if (_.contains(intersection, obj.label)){
+      return obj;
+    }
+  });
+  colorNodes = _.filter(colorNodes, function(obj){
+    return !!obj
+  });
+
+  var selection = d3.selectAll('g.node').data(colorNodes, function(d){
+    return d.label; 
+  });
+
+  selection.exit()
+           .style('fill', "#000" )
+
+  selection
+    .style("fill", "#00E600");
+
+  var list = d3.select('#list-container').select('ul').selectAll('li').data(intersection, function(d){return d});
+      console.log('enter selection: ', list.enter());
+      list
+        .enter()
+        .append('li')
+        .text(function(d){return d})
+        .style('font-family', 'Arial');
+      console.log('exit selection: ', list.exit());  
+      list.exit().remove();   
+
+}
+
