@@ -32,9 +32,9 @@ input[type=text]{
 
 .btn:hover {
     border: none;
-    background:#8F8F8F;
+    background:#727272;
 }
 
 .btn.clicked{
-    background:#8F8F8F;
+    background:#727272;
 }

@@ -14,7 +14,7 @@ var createMap = function(data, mode){
   //clear out the list
   console.log("div.list-items: ", d3.select('#list-container').selectAll('li'))
   d3.select('#list-container').selectAll('li').remove();
-
+  d3.select('#list-container').select('#artist2').text('')
 
 	var nodes = [];
 	var links = [];
@@ -85,7 +85,6 @@ var createMap = function(data, mode){
 				.attr("class", "node");
 
 
-
 	var size = [];
 	force.nodes().forEach(function(d){
     size.push(d.popularity);
@@ -96,14 +95,15 @@ var createMap = function(data, mode){
 
 	node.append("svg:circle")
 			.attr("r", function(d){return 10 + ((d.popularity - min)*(range*.6))/range})
-			.style("fill", "#555")
+			.style("fill", "#727272")
 			.style("stroke", "#FFF")
 			.style("stroke-width", 3)
 			
 	var text = vis.selectAll('text').data(force.nodes(), function(d){return d.label});
 			text.enter()
 			node.append('text')
-		      .attr("dy", ".5em")
+		      .attr("dy", ".25em")
+		      .attr("dx", "-.5em")
 		      .text(function(d) { return d.label;})
 		      .style('font-family', 'arial');
 
@@ -187,7 +187,9 @@ var compareNodes = function(data){
            .style('fill', "#000" )
 
   selection
-    .style("fill", "#00E600");
+    .style("fill", "#00CF00")
+    .style("stroke-width", 0.25)
+    .style("stroke", "#009100");
 
   var list = d3.select('#list-container').select('ul').selectAll('li').data(intersection, function(d){return d});
       console.log('enter selection: ', list.enter());
