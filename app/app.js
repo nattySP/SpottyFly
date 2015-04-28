@@ -1,8 +1,8 @@
 var app = {
 		spotifyAPI: 'https://api.spotify.com',
-		artistRelations : {},
 
 		getArtist: function(artist){
+			app.artistRelations = {};
 			$.ajax({
 				url: app.spotifyAPI + '/v1/search',
 				type: 'GET',
@@ -39,7 +39,13 @@ var app = {
 		},
 
 		init: function(){
-			app.getArtist('Beyonce');
+			$('#selectArtist').on('submit', function(event){
+				event.preventDefault();
+				var artist = $(this).find('#artist').val();
+				console.log('submit with ', artist);
+				app.getArtist(artist);
+				$(this).find('#artist').val('');
+			})
 		}
 };
 
