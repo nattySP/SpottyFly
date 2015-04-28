@@ -1,4 +1,4 @@
-var w = 1000, h = 900;
+var w = 960, h = 500;
 
 var labelDistance = 0;
 
@@ -58,7 +58,7 @@ var createMap = function(data){
 				.links(links)
 				.gravity(1)
 				.linkDistance(150) //distance between nodes
-				.charge(-3000)
+				.charge(-8000)
 				.linkStrength(function(x) {
 						return x.weight * 10
 				});
@@ -83,8 +83,21 @@ var createMap = function(data){
 				.append("svg:g")
 				.attr("class", "node");
 
+
+
+	var size = [];
+	force.nodes().forEach(function(d){
+    console.log('pop ', d.popularity);
+    size.push(d.popularity);
+  });
+  console.log('size ', size);
+  var min = Math.min.apply(null, size);
+  var max = Math.max.apply(null, size);
+  console.log('min ', min, 'max ', max);
+  var range = max - min; 			
+
 	node.append("svg:circle")
-			.attr("r", function(d){return d.popularity/10})
+			.attr("r", function(d){return 10 + ((d.popularity - min)*(range*.6))/range})
 			.style("fill", "#555")
 			.style("stroke", "#FFF")
 			.style("stroke-width", 3)
@@ -93,7 +106,8 @@ var createMap = function(data){
 			text.enter()
 			node.append('text')
 		      .attr("dy", ".5em")
-		      .text(function(d) { return d.label;});
+		      .text(function(d) { return d.label;})
+		      .style('font-family', 'arial');
 
 	console.log('text', text);
   node.exit().remove();
@@ -115,23 +129,17 @@ var createMap = function(data){
 
 	}
 
-	var updateNode = function() {
-		this.attr("transform", function(d) {
-			return "translate(" + d.x + "," + d.y + ")";
-		});
+	force.on("tick", function() {
+		var updateNode = d3.transition(node)
+				.attr("transform", function(d){ return "translate(" + d.x + "," + d.y + ")"; });
+		link.call(updateLink);
+	});
 
-	}
 
 	node.on('click', function(clickedNode){
 		console.log(clickedNode.label);
 		var newArtist = clickedNode.label; 
 		app.getArtist(newArtist);
-	});
-
-
-	force.on("tick", function() {
-		node.call(updateNode);
-		link.call(updateLink);
 	});
 }
 
