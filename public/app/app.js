@@ -39,16 +39,16 @@ var app = {
 		},
 
 		init: function(){
-			$('#selectArtist').on('submit', function(event){
-				event.preventDefault();
-				var artist = $(this).find('#artist').val();
-				app.getArtist(artist, createMap);
-				$(this).find('#artist').val('');
-			});
+			// $('#selectArtist').on('submit', function(event){
+			// 	event.preventDefault();
+			// 	var artist = $(this).find('#artist').val();
+			// 	app.getArtist(artist, createMap);
+			// 	$(this).find('#artist').val('');
+			// });
 
 			$(':button').on('click', function(){
 				app.mode = $(this).attr('value');
-				$('.clicked').removeClass('clicked');
+				$('.clicked').removeClass('clicked')
 				$(this).addClass('clicked');
 				console.log('app.mode: ', app.mode);
 			})

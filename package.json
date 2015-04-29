@@ -1,0 +1,13 @@
+{
+  "name": "SpottyFly",
+  "version": "0.0.1",
+  "description": "SpottyFly app for MVP",
+  "main": "spotty.js",
+  "repository": "",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.12.3",
+    "express": "^4.12.3",
+    "request": "^2.55.0"
+  }
+}
