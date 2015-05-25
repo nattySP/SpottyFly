@@ -6,6 +6,7 @@
   "repository": "",
   "private": true,
   "dependencies": {
+    "bluebird": "^2.9.25",
     "body-parser": "^1.12.3",
     "express": "^4.12.3",
     "mongoose": "^4.0.3",

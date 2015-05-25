@@ -2,49 +2,31 @@ var app = {
 		spotifyAPI: 'https://api.spotify.com',
 		mode : 'Spotty',
 
-		getArtist: function(artist, callback){
-			app.artistRelations = {};
+		getArtist: function (artist, callback) {
+			console.log('get artist called with: ',artist);
 			$.ajax({
-				url: app.spotifyAPI + '/v1/search',
-				type: 'GET',
-				contentType:'application/json',
-				data: {q: artist,
-					  type: 'artist'},
-				success: function(data){
-					var artistName = data.artists.items[0].name;
-					var artistId = data.artists.items[0].id; 
-					var artistPop = data.artists.items[0].popularity; 
-					app.artistRelations[artistName] = {};
-					app.artistRelations[artistName].id = artistId; 
-					app.artistRelations[artistName].popularity = artistPop; 
-					app.artistRelations[artistName].related = [];
-					$.ajax({
-						url: app.spotifyAPI + '/v1/artists/'+ artistId + '/related-artists',
-						type: 'GET', 
-						contentType: 'application/json',
-						success: function(data){
-							data.artists.forEach(function(artistObj){
-								var artistTrimmed = {
-									name : artistObj.name,
-									  id : artistObj.id,
-									  popularity: artistObj.popularity
-								};
-								app.artistRelations[artistName].related.push(artistTrimmed);
-							})
-							callback(app.artistRelations, app.mode);
-						}
-					})
+				url: '/',
+				type: 'POST',
+				data: {artist: artist},
+				success: function(data) {
+					console.log('got artist data: ', data);
+					callback(data);
+				},
+				error: function(error) {
+					console.log('error getting artist id (jquery ajax): ', error);
+					alert('That is not a valid artist.');
 				}
 			})
 		},
 
 		init: function(){
-			// $('#selectArtist').on('submit', function(event){
-			// 	event.preventDefault();
-			// 	var artist = $(this).find('#artist').val();
-			// 	app.getArtist(artist, createMap);
-			// 	$(this).find('#artist').val('');
-			// });
+			$('#selectArtist').on('submit', function(event){
+				event.preventDefault();
+				var artist = $(this).find('#artist').val();
+				console.log('from input listener, artist: ', artist);
+				app.getArtist(artist, createMap);
+				$(this).find('#artist').val('');
+			});
 
 			$(':button').on('click', function(){
 				app.mode = $(this).attr('value');

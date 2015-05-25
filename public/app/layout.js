@@ -9,10 +9,12 @@ var force = d3.layout.force();
 
 
 var createMap = function(data, mode){
-	console.log('create map called');
-	console.log('mode: ', mode);
+  mode = mode || app.mode;
+  console.log('create map called');
+  console.log('mode: ', mode);
+  console.log('createMap data: ', data);
   //clear out the list
-  console.log("div.list-items: ", d3.select('#list-container').selectAll('li'))
+  // console.log("div.list-items: ", d3.select('#list-container').selectAll('li'))
   d3.select('#list-container').selectAll('li').remove();
   d3.select('#list-container').select('#artist2').text('')
 
@@ -21,25 +23,23 @@ var createMap = function(data, mode){
 	//this fills the nodes array and links array with the connections for the submitted artist
 	//this is what needs to be changed on update
 
-	for (var key in data){
-		d3.select('#list-container').select('#artist1').text('Artists similar to ' + key);
+	d3.select('#list-container').select('#artist1').text('Artists similar to ' + data.spotifyName);
+	var node = {
+		label: data.spotifyName,
+		popularity: data.popularity,
+		weight: data.related.length
+	}
+	nodes.push(node);
+	data.related.forEach(function(artist){
 		var node = {
-			label: key,
-			id: data[key].id,
-			popularity: data[key].popularity,
-			weight: data[key].related.length
+			label: artist.name,
+			popularity: artist.popularity,
+			weight: 1
 		}
 		nodes.push(node);
-		data[key].related.forEach(function(artist){
-			var node = {
-				label: artist.name,
-				id: artist.id,
-				popularity: artist.popularity,
-				weight: 1
-			}
-			nodes.push(node);
-		})
-	}
+	})
+
+
 	for(var i = 0; i < nodes.length; i++) {
 		links.push({
 			source : nodes[0],
@@ -162,12 +162,10 @@ var createMap = function(data, mode){
 }
 
 var compareNodes = function(data){
-	console.log('compareNodes called');
+	console.log('compareNodes called: ', data);
   var currNodes = _.map(force.nodes(), function(obj){return obj.label}); 
   var newData; 
-  for (var key in data){
-    newData = _.map(data[key].related, function(obj){return obj.name});
-  }
+  newData = _.map(data.related, function(obj){return obj.name});
   var intersection = _.intersection(currNodes, newData);
   console.log('intersection: ', intersection);
   var colorNodes = _.map(force.nodes(), function(obj){
@@ -188,8 +186,6 @@ var compareNodes = function(data){
 
   selection
     .style("fill", "#00CF00")
-    .style("stroke-width", 0.25)
-    .style("stroke", "#009100");
 
   var list = d3.select('#list-container').select('ul').selectAll('li').data(intersection, function(d){return d});
       console.log('enter selection: ', list.enter());

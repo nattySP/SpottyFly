@@ -24,6 +24,8 @@ module.exports = function (app, express) {
 	});
 
 	app.post('/', utils.getArtistFromUser, utils.getArtistId );
+	app.post('/', utils.hasRelated, utils.getRelatedArtists, utils.updateRelated );
+	app.post('/', utils.sendDataBack)
 	
 }
 
