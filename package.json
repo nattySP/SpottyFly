@@ -15,5 +15,9 @@
   },
   "scripts": {
     "postinstall": "bower install"
+  },
+  "engines": {
+    "node": "0.12.2",
+    "npm": "2.7.4"
   }
 }
