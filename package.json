@@ -15,5 +15,5 @@
   },
   "scripts": {
     "postinstall": "bower install"
-  },
+  }
 }
