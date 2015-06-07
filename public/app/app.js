@@ -14,7 +14,6 @@ var app = {
 				},
 				error: function(error) {
 					console.log('error getting artist id (jquery ajax): ', error);
-					alert('That is not a valid artist.');
 				}
 			})
 		},
