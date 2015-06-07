@@ -1,2 +1,2 @@
-#solo
-This is a project I completed as a student at [hackreactor](http://hackreactor.com). This project was worked on with a pair.
+#SpottyFly
+SpottyFly is an application that was built over the course of two days while I was a student at Hack Reactor.  It allows you to explore artists and their related artists by pulling data from the Spottify API.  If you click an outer node, it will highlight the related artists that the outer node artist has in common with the center node artist.  
