@@ -12,5 +12,8 @@
     "mongoose": "^4.0.3",
     "qs": "^2.4.2",
     "request": "^2.55.0"
-  }
+  },
+  "scripts": {
+    "postinstall": "bower install"
+  },
 }
